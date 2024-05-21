@@ -8,7 +8,7 @@ tmp_dir = os.path.join(os.getcwd(), 'tmp')
 zip_path = os.path.join(tmp_dir, 'new_zip.zip')
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='module', autouse=True)
 def zip_new_file():
     zip_file = zipfile.ZipFile(zip_path, 'w')
     zip_file.write("tmp/file_csv.csv", arcname='file_csv.csv', compress_type=zipfile.ZIP_DEFLATED)
