@@ -17,7 +17,8 @@ def test_csv_file():
     with zipfile.ZipFile(zip_resources) as zip_file:
         with zip_file.open('file_csv.csv') as csv_file:
             reader = csv_file.read().decode('utf-8-sig')
-            print(reader)
+            assert 'Elena' in reader
+
 
 
 def test_xlsx_file():
@@ -25,4 +26,5 @@ def test_xlsx_file():
         with zip_file.open('file_xlsx.xlsx') as file:
             workbook = load_workbook(file)
             sheet = workbook.active
-            print(f'\n{sheet.cell(row=1, column=1).value}')
+            assert sheet.cell(row=1, column=1).value == '1 строка 1 столбец'
+            assert sheet['A2'].value == '2 строка 1 столбец'
