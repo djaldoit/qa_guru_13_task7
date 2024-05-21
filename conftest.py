@@ -1,24 +1,24 @@
+import shutil
 import pytest
 import zipfile
 import os
-import time
 
 
 tmp_dir = os.path.join(os.getcwd(), 'tmp')
-zip_path = os.path.join(tmp_dir, 'new_zip.zip')
+zip_path = os.path.join(os.getcwd(), "zipped")
+zip_resources = os.path.join(os.getcwd(), 'zipped', 'new_zip.zip')
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def zip_new_file():
-    zip_file = zipfile.ZipFile(zip_path, 'w')
-    zip_file.write("tmp/file_csv.csv", arcname='file_csv.csv', compress_type=zipfile.ZIP_DEFLATED)
-    zip_file.write("tmp/file_xlsx.xlsx", arcname='file_xlsx.xlsx', compress_type=zipfile.ZIP_DEFLATED)
-    zip_file.write("tmp/file_pdf.pdf", arcname='file_pdf.pdf', compress_type=zipfile.ZIP_DEFLATED)
-    zip_file.close()
+    if not os.path.exists(zip_path):
+        os.mkdir(zip_path)
 
-    print(f'\nФайлы в zip: {zip_file.namelist()}')
+    with zipfile.ZipFile(zip_path + '/new_zip.zip', 'w') as zip_file:
+        for file in os.listdir(tmp_dir):
+            add_file = os.path.join(tmp_dir, file)
+            zip_file.write(add_file, os.path.basename(add_file))
 
     yield
-    time.sleep(2)
-    os.remove("tmp/new_zip.zip")
-    print('\nФайл zip удален')
+
+    shutil.rmtree(zip_path)
